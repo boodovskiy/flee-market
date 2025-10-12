@@ -43,7 +43,7 @@ function RootLayoutNav() {
   return (
     <ClerkProvider tokenCache={tokenCache}>
       <Stack>
-        <Stack.Screen name="(auth)/login" options={{ title: "Login" }} />
+        <Stack.Screen name="(auth)" options={{ title: "Login" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </ClerkProvider>
