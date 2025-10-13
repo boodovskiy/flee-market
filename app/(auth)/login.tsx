@@ -1,5 +1,30 @@
-import React from "react";
+import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
+import { useSSO } from "@clerk/clerk-expo";
+import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import React, { useCallback } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+
+WebBrowser.maybeCompleteAuthSession();
+useWarmUpBrowser();
+
+const { startSSOFlow } = useSSO();
+
+const handleGoogleSignIn = useCallback(async () => {
+  try {
+    const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
+      strategy: "oauth_google",
+      redirectUrl: AuthSession.makeRedirectUri(),
+    });
+
+    if (createdSessionId) {
+      setActive!({ session: createdSessionId });
+    } else {
+    }
+  } catch (error) {
+    console.error(JSON.stringify(error, null, 2));
+  }
+}, []);
 
 export default function LoginScreen() {
   return (
@@ -17,7 +42,7 @@ export default function LoginScreen() {
           money!
         </Text>
         <TouchableOpacity
-          onPress={() => console.log("sign-in")}
+          onPress={handleGoogleSignIn}
           className="p-4 bg-blue-500 rounded-full mt-20"
         >
           <Text className="text-white text-center text-[18px]">
