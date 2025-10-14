@@ -6,27 +6,29 @@ import React, { useCallback } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
-useWarmUpBrowser();
-
-const { startSSOFlow } = useSSO();
-
-const handleGoogleSignIn = useCallback(async () => {
-  try {
-    const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
-      strategy: "oauth_google",
-      redirectUrl: AuthSession.makeRedirectUri(),
-    });
-
-    if (createdSessionId) {
-      setActive!({ session: createdSessionId });
-    } else {
-    }
-  } catch (error) {
-    console.error(JSON.stringify(error, null, 2));
-  }
-}, []);
 
 export default function LoginScreen() {
+  useWarmUpBrowser();
+
+  const { startSSOFlow } = useSSO();
+
+  const handleGoogleSignIn = useCallback(async () => {
+    try {
+      const { createdSessionId, setActive, signIn, signUp } =
+        await startSSOFlow({
+          strategy: "oauth_google",
+          redirectUrl: AuthSession.makeRedirectUri(),
+        });
+
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
+      } else {
+      }
+    } catch (error) {
+      console.error(JSON.stringify(error, null, 2));
+    }
+  }, []);
+
   return (
     <View>
       <Image

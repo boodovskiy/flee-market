@@ -1,11 +1,28 @@
-import { ClerkProvider } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "./global.css";
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -36,16 +53,48 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <ClerkProvider
+      tokenCache={tokenCache}
+      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+    >
+      <InitialLayout />
+    </ClerkProvider>
+  );
 }
 
-function RootLayoutNav() {
+function InitialLayout() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    const inAuthGroup = segments[0] === "(auth)";
+
+    // If the user is signed in and the initial segment is not '(tabs)',
+    // redirect them to the main app area.
+    if (isSignedIn && inAuthGroup) {
+      router.replace("/(tabs)");
+    }
+    // If the user is not signed in and the initial segment is not '(auth)',
+    // redirect them to the login screen.
+    else if (!isSignedIn && !inAuthGroup) {
+      router.replace("/(auth)/login");
+    }
+  }, [isLoaded, isSignedIn, segments, router]);
+
+  if (!isLoaded) {
+    return null; // Or a <Spinner /> component
+  }
+
   return (
-    <ClerkProvider tokenCache={tokenCache}>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ title: "Login" }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </ClerkProvider>
+    <Stack>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
   );
 }
