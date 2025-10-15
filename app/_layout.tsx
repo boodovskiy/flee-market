@@ -1,28 +1,11 @@
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "./global.css";
-
-const tokenCache = {
-  async getToken(key: string) {
-    try {
-      return SecureStore.getItemAsync(key);
-    } catch (err) {
-      return null;
-    }
-  },
-  async saveToken(key: string, value: string) {
-    try {
-      return SecureStore.setItemAsync(key, value);
-    } catch (err) {
-      return;
-    }
-  },
-};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -75,13 +58,11 @@ function InitialLayout() {
 
     const inAuthGroup = segments[0] === "(auth)";
 
-    // If the user is signed in and the initial segment is not '(tabs)',
-    // redirect them to the main app area.
+    // If the user is signed in and not in the main app area, redirect away from auth.
     if (isSignedIn && inAuthGroup) {
       router.replace("/(tabs)");
     }
-    // If the user is not signed in and the initial segment is not '(auth)',
-    // redirect them to the login screen.
+    // If the user is not signed in and is not in the auth group, redirect to the login screen.
     else if (!isSignedIn && !inAuthGroup) {
       router.replace("/(auth)/login");
     }
