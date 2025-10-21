@@ -12,6 +12,7 @@
     "@clerk/clerk-expo": "^2.16.1",
     "@clerk/shared": "^3.27.3",
     "@expo/vector-icons": "^15.0.2",
+    "@react-native-picker/picker": "2.11.1",
     "@react-navigation/native": "^7.1.8",
     "expo": "~54.0.12",
     "expo-constants": "~18.0.9",

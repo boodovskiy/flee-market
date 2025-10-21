@@ -1,3 +1,4 @@
+import { Picker } from "@react-native-picker/picker";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { Formik } from "formik";
 import React, { useEffect } from "react";
@@ -76,6 +77,20 @@ export default function AddPostScreen() {
               onChangeText={handleChange("price")}
             />
             {/* Category List Dropdown */}
+            <Picker
+              selectedValue={values?.category}
+              onValueChange={handleChange("category")}
+              style={styles.input}
+            >
+              {categoryList &&
+                categoryList.map((item, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={item.name}
+                    value={item.name}
+                  />
+                ))}
+            </Picker>
             <TouchableOpacity
               onPress={() => handleSubmit()}
               className="p-4 bg-blue-500 mt-7 rounded-lg"
