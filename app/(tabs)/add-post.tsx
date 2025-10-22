@@ -43,6 +43,10 @@ export default function AddPostScreen() {
 
   return (
     <View className="p-10">
+      <Text className="text-[27px] font-bold">Add New Post</Text>
+      <Text className="text-[16px] text-gray-500  mb-7">
+        Create New Post and Start Selling
+      </Text>
       <Formik
         initialValues={{
           title: "",
@@ -54,7 +58,13 @@ export default function AddPostScreen() {
         }}
         onSubmit={(value) => console.log(value)}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          setFieldValue,
+        }) => (
           <View>
             <TextInput
               style={styles.input}
@@ -76,24 +86,33 @@ export default function AddPostScreen() {
               keyboardType="number-pad"
               onChangeText={handleChange("price")}
             />
-            {/* Category List Dropdown */}
-            <Picker
-              selectedValue={values?.category}
-              onValueChange={handleChange("category")}
+            <TextInput
               style={styles.input}
-            >
-              {categoryList &&
-                categoryList.map((item, index) => (
-                  <Picker.Item
-                    key={index}
-                    label={item.name}
-                    value={item.name}
-                  />
-                ))}
-            </Picker>
+              placeholder="Address"
+              value={values?.address}
+              onChangeText={handleChange("price")}
+            />
+            <View style={{ borderWidth: 1, borderRadius: 10, marginTop: 15 }}>
+              <Picker
+                selectedValue={values?.category}
+                onValueChange={(itemValue) =>
+                  setFieldValue("category", itemValue)
+                }
+                className="border-2"
+              >
+                {categoryList &&
+                  categoryList.map((item, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={item.name}
+                      value={item.name}
+                    />
+                  ))}
+              </Picker>
+            </View>
             <TouchableOpacity
               onPress={() => handleSubmit()}
-              className="p-4 bg-blue-500 mt-7 rounded-lg"
+              className="p-4 bg-blue-500 mt-10 rounded-lg"
             >
               <Text className="text-white text-center uppercase">Submit</Text>
             </TouchableOpacity>
@@ -110,6 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 15,
+    textAlignVertical: "top",
     marginTop: 10,
     marginBottom: 5,
     fontSize: 16,
