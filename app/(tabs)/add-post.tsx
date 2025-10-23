@@ -3,6 +3,7 @@ import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { Formik } from "formik";
 import React, { useEffect } from "react";
 import {
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -66,6 +67,12 @@ export default function AddPostScreen() {
           setFieldValue,
         }) => (
           <View>
+            <TouchableOpacity onPress={() => console.log("Image Click")}>
+              <Image
+                source={require("./../../assets/images/placeholder.jpg")}
+                style={{ width: 100, height: 100, borderRadius: 15 }}
+              />
+            </TouchableOpacity>
             <TextInput
               style={styles.input}
               placeholder="Title"
