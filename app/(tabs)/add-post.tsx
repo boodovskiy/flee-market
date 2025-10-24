@@ -1,12 +1,14 @@
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { Formik } from "formik";
-import React, { useEffect } from "react";
+import { Formik, FormikErrors } from "formik";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,7 +20,17 @@ interface Category {
   icon: string;
 }
 
+interface FormValues {
+  title: string;
+  description: string;
+  category: string;
+  address: string;
+  price: string;
+  image: string;
+}
+
 export default function AddPostScreen() {
+  const [image, setImage] = useState<string | null>(null);
   const [categoryList, setCategoryList] = React.useState<Category[]>([]);
   const db = getFirestore(app);
 
@@ -42,6 +54,26 @@ export default function AddPostScreen() {
     getCategoryList();
   }, []);
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const onSubmitMethod = (value: any) => {
+    value.image = image;
+    console.log("Form Values:", value);
+  };
+
   return (
     <View className="p-10">
       <Text className="text-[27px] font-bold">Add New Post</Text>
@@ -57,7 +89,16 @@ export default function AddPostScreen() {
           price: "",
           image: "",
         }}
-        onSubmit={(value) => console.log(value)}
+        onSubmit={(value) => onSubmitMethod(value)}
+        validate={(values) => {
+          const errors: FormikErrors<FormValues> = {};
+          if (!values.title) {
+            console.log("Title is required");
+            ToastAndroid.show("Title is required", ToastAndroid.SHORT);
+            errors.title = "Title is required";
+          }
+          return errors;
+        }}
       >
         {({
           handleChange,
@@ -65,13 +106,21 @@ export default function AddPostScreen() {
           handleSubmit,
           values,
           setFieldValue,
+          errors,
         }) => (
           <View>
-            <TouchableOpacity onPress={() => console.log("Image Click")}>
-              <Image
-                source={require("./../../assets/images/placeholder.jpg")}
-                style={{ width: 100, height: 100, borderRadius: 15 }}
-              />
+            <TouchableOpacity onPress={pickImage}>
+              {image ? (
+                <Image
+                  source={{ uri: image }}
+                  style={{ width: 100, height: 100 }}
+                />
+              ) : (
+                <Image
+                  source={require("./../../assets/images/placeholder.jpg")}
+                  style={{ width: 100, height: 100, borderRadius: 15 }}
+                />
+              )}
             </TouchableOpacity>
             <TextInput
               style={styles.input}
