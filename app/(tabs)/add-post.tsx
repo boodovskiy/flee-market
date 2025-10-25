@@ -1,6 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { Formik, FormikErrors } from "formik";
 import React, { useEffect, useState } from "react";
 import {
@@ -69,9 +70,18 @@ export default function AddPostScreen() {
     }
   };
 
-  const onSubmitMethod = (value: any) => {
+  const onSubmitMethod = async (value: any) => {
     value.image = image;
-    console.log("Form Values:", value);
+    // Convert URI to Blob File
+    const response = await fetch(image || "");
+    const blob = await response.blob();
+
+    const storage = getStorage();
+    const storageRef = ref(storage, "images/" + new Date().getTime() + ".jpg");
+
+    uploadBytes(storageRef, blob).then((snapshot) => {
+      console.log("Uploaded a blob or file!");
+    });
   };
 
   return (
