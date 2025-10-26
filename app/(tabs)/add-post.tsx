@@ -1,7 +1,8 @@
+import { useUser } from "@clerk/clerk-expo";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { Formik, FormikErrors } from "formik";
 import React, { useEffect, useState } from "react";
 import {
@@ -34,6 +35,9 @@ export default function AddPostScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [categoryList, setCategoryList] = React.useState<Category[]>([]);
   const db = getFirestore(app);
+  const storage = getStorage();
+
+  const { user } = useUser();
 
   const getCategoryList = async () => {
     const categories: Category[] = [];
@@ -71,17 +75,31 @@ export default function AddPostScreen() {
   };
 
   const onSubmitMethod = async (value: any) => {
-    value.image = image;
     // Convert URI to Blob File
     const response = await fetch(image || "");
     const blob = await response.blob();
 
-    const storage = getStorage();
     const storageRef = ref(storage, "images/" + new Date().getTime() + ".jpg");
 
-    uploadBytes(storageRef, blob).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
+    uploadBytes(storageRef, blob)
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!");
+      })
+      .then((resp) => {
+        getDownloadURL(storageRef).then(async (downloadURL) => {
+          console.log("File available at", downloadURL);
+          value.image = downloadURL;
+
+          value.userName = user?.fullName || "Anonymous";
+          value.userEmail = user?.primaryEmailAddress?.emailAddress || "";
+          value.userImage = user?.imageUrl || "";
+
+          const docRef = await addDoc(collection(db, "UserPost"), value);
+          if (docRef.id) {
+            console.log("Document added with ID: ", docRef.id);
+          }
+        });
+      });
   };
 
   return (
@@ -98,6 +116,9 @@ export default function AddPostScreen() {
           address: "",
           price: "",
           image: "",
+          userName: "",
+          userEmail: "",
+          userImage: "",
         }}
         onSubmit={(value) => onSubmitMethod(value)}
         validate={(values) => {
