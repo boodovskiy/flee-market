@@ -6,6 +6,8 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { Formik, FormikErrors } from "formik";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -32,6 +34,7 @@ interface FormValues {
 }
 
 export default function AddPostScreen() {
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [categoryList, setCategoryList] = React.useState<Category[]>([]);
   const db = getFirestore(app);
@@ -75,6 +78,7 @@ export default function AddPostScreen() {
   };
 
   const onSubmitMethod = async (value: any) => {
+    setLoading(true);
     // Convert URI to Blob File
     const response = await fetch(image || "");
     const blob = await response.blob();
@@ -97,6 +101,8 @@ export default function AddPostScreen() {
           const docRef = await addDoc(collection(db, "UserPost"), value);
           if (docRef.id) {
             console.log("Document added with ID: ", docRef.id);
+            setLoading(false);
+            Alert.alert("Success", "Post added successfully");
           }
         });
       });
@@ -177,7 +183,7 @@ export default function AddPostScreen() {
               style={styles.input}
               placeholder="Address"
               value={values?.address}
-              onChangeText={handleChange("price")}
+              onChangeText={handleChange("address")}
             />
             <View style={{ borderWidth: 1, borderRadius: 10, marginTop: 15 }}>
               <Picker
@@ -200,8 +206,14 @@ export default function AddPostScreen() {
             <TouchableOpacity
               onPress={() => handleSubmit()}
               className="p-4 bg-blue-500 mt-10 rounded-lg"
+              style={{ backgroundColor: loading ? "#ccc" : "#007BFF" }}
+              disabled={loading}
             >
-              <Text className="text-white text-center uppercase">Submit</Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text className="text-white text-center uppercase">Submit</Text>
+              )}
             </TouchableOpacity>
           </View>
         )}
