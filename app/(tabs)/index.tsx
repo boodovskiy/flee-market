@@ -2,12 +2,12 @@ import { Text, View } from "@/components/Themed";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   const { user } = useUser();
 
   return (
     <View className="flex-1 items-center justify-center">
-      <Text className="font-bold text-2xl text-red-500">Tab One</Text>
+      <Text className="font-bold text-2xl text-red-500">Home!</Text>
       <View
         className="my-7 h-px w-3/4 bg-gray-200"
         lightColor="#eee"
