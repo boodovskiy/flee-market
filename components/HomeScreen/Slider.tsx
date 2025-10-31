@@ -1,10 +1,23 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { FlatList, Image, View } from "react-native";
+import { SliderItem } from "../../types";
 
-export default function Slider() {
+interface SliderProps {
+  sliderList: SliderItem[];
+}
+
+export default function Slider({ sliderList }: SliderProps) {
   return (
     <View>
-      <Text>Slider</Text>
+      <FlatList
+        data={sliderList}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => (
+          <View>
+            <Image source={{ uri: item?.image }} className="h-[200px]" />
+          </View>
+        )}
+      />
     </View>
   );
 }
