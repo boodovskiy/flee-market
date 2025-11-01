@@ -8,13 +8,18 @@ interface SliderProps {
 
 export default function Slider({ sliderList }: SliderProps) {
   return (
-    <View>
+    <View className="mt-5">
       <FlatList
         data={sliderList}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <View>
-            <Image source={{ uri: item?.image }} className="h-[200px]" />
+          <View key={item.id}>
+            <Image
+              source={{ uri: item?.image }}
+              className="h-[200px] w-[300px] mr-3 rounded-lg object-contain"
+            />
           </View>
         )}
       />

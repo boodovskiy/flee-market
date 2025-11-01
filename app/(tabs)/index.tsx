@@ -11,12 +11,20 @@ export default function HomeScreen() {
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
 
   const getSliders = async () => {
-    setSliderList([]);
     const querySnapshot = await getDocs(collection(db, "Sliders"));
+    const data: SliderItem[] = [];
+
     querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-      setSliderList((prev) => [...prev, doc.data() as SliderItem]);
+      const itemWithId: SliderItem = {
+        id: doc.id,
+        ...(doc.data() as { image: string }),
+      };
+
+      console.log(`${itemWithId.id} => ${JSON.stringify(itemWithId)}`);
+      data.push(itemWithId);
     });
+
+    setSliderList(data);
   };
 
   useEffect(() => {
