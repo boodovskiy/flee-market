@@ -1,10 +1,25 @@
+import { Category } from "@/types";
 import React from "react";
-import { Text, View } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function Categories() {
+interface CategoriesProps {
+  categoryList: Category[];
+}
+
+export default function Categories({ categoryList }: CategoriesProps) {
   return (
-    <View>
-      <Text>Categories</Text>
+    <View className="mt-3">
+      <Text className="font-bold  text-[20px]">Categories</Text>
+      <FlatList
+        data={categoryList}
+        numColumns={4}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity className="flex-1 items-center justify-center p-2 border-[1px] border-gray-300 m-1 h-[80px] rounded-lg">
+            <Image source={{ uri: item.icon }} className="w-[40px] h-[40px]" />
+            <Text className="mt-1 text-center text-[12px]">{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 }

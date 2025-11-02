@@ -16,13 +16,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Category } from "../../types";
 import { app } from "../firebaseConfig";
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-}
 
 interface FormValues {
   title: string;

@@ -1,14 +1,16 @@
+import Categories from "@/components/HomeScreen/Categories";
 import Header from "@/components/HomeScreen/Header";
 import Slider from "@/components/HomeScreen/Slider";
 import { View } from "@/components/Themed";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { SliderItem } from "../../types";
+import { Category, SliderItem } from "../../types";
 import { app } from "../firebaseConfig";
 
 export default function HomeScreen() {
   const db = getFirestore(app);
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
 
   const getSliders = async () => {
     const querySnapshot = await getDocs(collection(db, "Sliders"));
@@ -27,8 +29,25 @@ export default function HomeScreen() {
     setSliderList(data);
   };
 
+  const getCategoryList = async () => {
+    const categories: Category[] = [];
+    const querySnapshot = await getDocs(collection(db, "Category"));
+
+    querySnapshot.forEach((doc) => {
+      console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
+
+      const data = doc.data() as { name: string; icon: string };
+      categories.push({
+        id: doc.id, // Get the document ID
+        ...data, // Spread the rest of the data
+      });
+    });
+    setCategoryList(categories);
+  };
+
   useEffect(() => {
     getSliders();
+    getCategoryList();
   }, []);
   return (
     <View className="py-8 px-6 flex-1">
@@ -39,6 +58,7 @@ export default function HomeScreen() {
         darkColor="rgba(255,255,255,0.1)"
       />
       <Slider sliderList={sliderList} />
+      <Categories categoryList={categoryList} />
     </View>
   );
 }
