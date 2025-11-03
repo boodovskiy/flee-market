@@ -19,7 +19,7 @@ export default function Header() {
         </View>
       </View>
       {/* Search Bar Section */}
-      <View className="mt-5 p-3 flex flex-row items-center gap-2 border-[1px] border-blue-500 rounded-3xl px-5">
+      <View className="mt-5 p-[9px] flex flex-row items-center gap-2 bg-blue-50 border-[1px] border-blue-300 rounded-full px-5">
         <FontAwesome name="search" size={24} color="#6b7280" />
         <TextInput
           placeholder="Search"

@@ -14,7 +14,7 @@ export default function Categories({ categoryList }: CategoriesProps) {
         data={categoryList}
         numColumns={4}
         renderItem={({ item, index }) => (
-          <TouchableOpacity className="flex-1 items-center justify-center p-2 border-[1px] border-gray-300 m-1 h-[80px] rounded-lg">
+          <TouchableOpacity className="flex-1 items-center justify-center p-2 border-[1px] border-blue-200 m-1 h-[80px] rounded-lg bg-blue-50">
             <Image source={{ uri: item.icon }} className="w-[40px] h-[40px]" />
             <Text className="mt-1 text-center text-[12px]">{item.name}</Text>
           </TouchableOpacity>
