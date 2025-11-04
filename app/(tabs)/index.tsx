@@ -1,16 +1,18 @@
 import Categories from "@/components/HomeScreen/Categories";
 import Header from "@/components/HomeScreen/Header";
+import LatestItemList from "@/components/HomeScreen/LatestItemList";
 import Slider from "@/components/HomeScreen/Slider";
 import { View } from "@/components/Themed";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Category, SliderItem } from "../../types";
+import { Category, PostItem, SliderItem } from "../../types";
 import { app } from "../firebaseConfig";
 
 export default function HomeScreen() {
   const db = getFirestore(app);
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [latestItemList, setLatestItemList] = useState<PostItem[]>([]);
 
   const getSliders = async () => {
     const querySnapshot = await getDocs(collection(db, "Sliders"));
@@ -45,9 +47,28 @@ export default function HomeScreen() {
     setCategoryList(categories);
   };
 
+  const getLatestItemList = async () => {
+    const posts: PostItem[] = [];
+    const querySnapshot = await getDocs(collection(db, "UserPost"));
+    querySnapshot.forEach((doc) => {
+      console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
+
+      // 2. Assert the type of the document data (omitting 'id')
+      const data = doc.data() as Omit<PostItem, "id">;
+
+      posts.push({
+        id: doc.id, // Get the document ID
+        ...data, // Spread the rest of the data
+      });
+    });
+
+    setLatestItemList(posts);
+  };
+
   useEffect(() => {
     getSliders();
     getCategoryList();
+    getLatestItemList();
   }, []);
   return (
     <View className="py-8 px-6 flex-1">
@@ -59,6 +80,7 @@ export default function HomeScreen() {
       />
       <Slider sliderList={sliderList} />
       <Categories categoryList={categoryList} />
+      <LatestItemList latestItemList={latestItemList} />
     </View>
   );
 }

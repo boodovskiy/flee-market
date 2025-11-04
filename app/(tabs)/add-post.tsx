@@ -18,17 +18,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Category } from "../../types";
+import { Category, PostItem } from "../../types";
 import { app } from "../firebaseConfig";
 
-interface FormValues {
-  title: string;
-  description: string;
-  category: string;
-  address: string;
-  price: string;
-  image: string;
-}
+type FormValues = Omit<PostItem, "id">;
 
 export default function AddPostScreen() {
   const [loading, setLoading] = useState(false);
@@ -123,6 +116,7 @@ export default function AddPostScreen() {
             userName: "",
             userEmail: "",
             userImage: "",
+            createdAt: Date.now(),
           }}
           onSubmit={(value) => onSubmitMethod(value)}
           validate={(values) => {
