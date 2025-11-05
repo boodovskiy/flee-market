@@ -3,8 +3,15 @@ import Header from "@/components/HomeScreen/Header";
 import LatestItemList from "@/components/HomeScreen/LatestItemList";
 import Slider from "@/components/HomeScreen/Slider";
 import { View } from "@/components/Themed";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { ScrollView } from "react-native";
 import { Category, PostItem, SliderItem } from "../../types";
 import { app } from "../firebaseConfig";
 
@@ -49,7 +56,9 @@ export default function HomeScreen() {
 
   const getLatestItemList = async () => {
     const posts: PostItem[] = [];
-    const querySnapshot = await getDocs(collection(db, "UserPost"));
+    const querySnapshot = await getDocs(
+      query(collection(db, "UserPost"), orderBy("createdAt", "desc"))
+    );
     querySnapshot.forEach((doc) => {
       console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
 
@@ -71,7 +80,7 @@ export default function HomeScreen() {
     getLatestItemList();
   }, []);
   return (
-    <View className="py-8 px-6 flex-1">
+    <ScrollView className="py-8 px-6 flex-1">
       <Header />
       <View
         className="my-7 h-px w-3/4 bg-gray-200"
@@ -81,6 +90,6 @@ export default function HomeScreen() {
       <Slider sliderList={sliderList} />
       <Categories categoryList={categoryList} />
       <LatestItemList latestItemList={latestItemList} />
-    </View>
+    </ScrollView>
   );
 }
