@@ -12,14 +12,14 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { Category, PostItem, SliderItem } from "../../types";
-import { app } from "../firebaseConfig";
+import { Category, PostItemType, SliderItem } from "../../../types";
+import { app } from "../../firebaseConfig";
 
 export default function HomeScreen() {
   const db = getFirestore(app);
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
-  const [latestItemList, setLatestItemList] = useState<PostItem[]>([]);
+  const [latestItemList, setLatestItemList] = useState<PostItemType[]>([]);
 
   const getSliders = async () => {
     const querySnapshot = await getDocs(collection(db, "Sliders"));
@@ -55,7 +55,7 @@ export default function HomeScreen() {
   };
 
   const getLatestItemList = async () => {
-    const posts: PostItem[] = [];
+    const posts: PostItemType[] = [];
     const querySnapshot = await getDocs(
       query(collection(db, "UserPost"), orderBy("createdAt", "desc"))
     );
@@ -63,7 +63,7 @@ export default function HomeScreen() {
       console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
 
       // 2. Assert the type of the document data (omitting 'id')
-      const data = doc.data() as Omit<PostItem, "id">;
+      const data = doc.data() as Omit<PostItemType, "id">;
 
       posts.push({
         id: doc.id, // Get the document ID
