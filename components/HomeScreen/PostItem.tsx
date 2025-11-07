@@ -1,7 +1,7 @@
+import { PostItemType } from "@/types";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { PostItem } from "../../types/PostItem";
 
-export default function PostItem({ item }: { item: PostItem }) {
+export default function PostItem({ item }: { item: PostItemType }) {
   return (
     <TouchableOpacity className="flex-1 m-2 p-2 rounded-lg border-[1px] border-slate-200">
       <Image

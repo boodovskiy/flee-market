@@ -1,4 +1,4 @@
-import { PostItem as PostItemType } from "@/types";
+import { PostItemType } from "@/types";
 import React from "react";
 import { FlatList, Text, View } from "react-native";
 import PostItem from "./PostItem";

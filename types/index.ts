@@ -9,7 +9,7 @@ export interface Category {
   icon: string;
 }
 
-export interface PostItem {
+export interface PostItemType {
   id: string; // The document ID (always include this for lists)
   title: string;
   description: string;
