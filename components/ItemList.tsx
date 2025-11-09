@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import LatestItemList from "./HomeScreen/LatestItemList";
 
 type CategoryParams = {
   categoryName: string;
@@ -48,8 +49,14 @@ export default function ItemList() {
     setItemList(posts);
   };
   return (
-    <View>
-      <Text>ItemList</Text>
+    <View className="p-2">
+      {itemList?.length > 0 ? (
+        <LatestItemList latestItemList={itemList} heading={""} />
+      ) : (
+        <Text className="p-5 text-[20px] text-gray-400 justify-center text-center mt-24">
+          No items found in this category.
+        </Text>
+      )}
     </View>
   );
 }
