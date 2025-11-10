@@ -19,7 +19,7 @@ export default function Categories({ categoryList }: CategoriesProps) {
             className="flex-1 items-center justify-center p-2 border-[1px] border-blue-200 m-1 h-[80px] rounded-lg bg-blue-50"
             onPress={() =>
               router.push({
-                pathname: "/index/category-details/[categoryName]",
+                pathname: "./category-details/[categoryName]",
                 params: { categoryName: item.name },
               })
             }
