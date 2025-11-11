@@ -1,9 +1,22 @@
 import { PostItemType } from "@/types";
+import { useRouter } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function PostItem({ item }: { item: PostItemType }) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({
+      pathname: "./product-details/[id]",
+      params: { id: item.id },
+    });
+  };
+
   return (
-    <TouchableOpacity className="flex-1 m-2 p-2 rounded-lg border-[1px] border-slate-200">
+    <TouchableOpacity
+      className="flex-1 m-2 p-2 rounded-lg border-[1px] border-slate-200"
+      onPress={handlePress}
+    >
       <Image
         source={{ uri: item.image }}
         className="w-full h-[120px] rounded-lg"
