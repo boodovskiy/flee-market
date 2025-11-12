@@ -18,8 +18,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { app } from "../../firebaseConfig";
 import { Category, PostItem } from "../../types";
-import { app } from "../firebaseConfig";
 
 type FormValues = Omit<PostItem, "id">;
 

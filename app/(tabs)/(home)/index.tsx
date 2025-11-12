@@ -12,8 +12,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
+import { app } from "../../../firebaseConfig";
 import { Category, PostItemType, SliderItem } from "../../../types";
-import { app } from "../../firebaseConfig";
 
 export default function HomeScreen() {
   const db = getFirestore(app);
@@ -106,3 +106,7 @@ export default function HomeScreen() {
     />
   );
 }
+
+HomeScreen.options = {
+  headerShown: false,
+};

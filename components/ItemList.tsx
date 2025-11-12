@@ -1,4 +1,4 @@
-import { app } from "@/app/firebaseConfig";
+import { app } from "@/firebaseConfig";
 import { PostItemType } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import {
