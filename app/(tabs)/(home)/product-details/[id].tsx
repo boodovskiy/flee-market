@@ -1,12 +1,16 @@
+import { PostItemType } from "@/types";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 
 export default function ProductDetail() {
-  const { id } = useLocalSearchParams();
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>ProductDetail {id}</Text>
-    </View>
-  );
+  const { item } = useLocalSearchParams();
+  const [product, setProduct] = useState<PostItemType[]>([]);
+
+  useEffect(() => {
+    console.log(item);
+    //setProduct();
+  }, [item]);
+
+  return <View style={{ flex: 1 }}>{/* <Image /> */}</View>;
 }
