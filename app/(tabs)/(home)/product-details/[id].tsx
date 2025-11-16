@@ -20,7 +20,7 @@ export default function ProductDetail() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} className="bg-white">
       <Image source={{ uri: product?.image }} className="h-[350px] w-full" />
 
       <View className="p-3">
@@ -34,6 +34,17 @@ export default function ProductDetail() {
         <Text className="text-[17px] text-gray-500">
           {product?.description}
         </Text>
+      </View>
+
+      <View className="p-3 flex flex-row items-center gap-3 bg-blue-100 border-gray-400">
+        <Image
+          source={{ uri: product?.userImage }}
+          className="h-12 w-12 rounded-full"
+        />
+        <View>
+          <Text className="font-bold text-[18px]">{product?.userName}</Text>
+          <Text className="text-gray-500">{product?.userEmail}</Text>
+        </View>
       </View>
     </View>
   );
