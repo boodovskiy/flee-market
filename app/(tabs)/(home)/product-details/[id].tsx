@@ -1,7 +1,7 @@
 import { PostItemType } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Linking, Text, TouchableOpacity, View } from "react-native";
 
 export default function ProductDetail() {
   const { item } = useLocalSearchParams();
@@ -18,6 +18,18 @@ export default function ProductDetail() {
       }
     }
   }, []);
+
+  const sendEmailMessage = () => {
+    const subject = encodeURIComponent(
+      `Inquiry about your product ${product?.title}`
+    );
+    const body = encodeURIComponent(
+      `Hello ${product?.userName},\n\nI am interested in your product "${product?.title}". Please provide more details.\n\nThank you!`
+    );
+    Linking.openURL(
+      `mailto:${product?.userEmail}?subject=${subject}&body=${body}`
+    );
+  };
 
   return (
     <View style={{ flex: 1 }} className="bg-white">
@@ -46,6 +58,12 @@ export default function ProductDetail() {
           <Text className="text-gray-500">{product?.userEmail}</Text>
         </View>
       </View>
+      <TouchableOpacity
+        className="z-40 bg-blue-500 rounded-full p-4 m-2"
+        onPress={() => sendEmailMessage()}
+      >
+        <Text className="center text-white">Send Message</Text>
+      </TouchableOpacity>
     </View>
   );
 }
