@@ -1,11 +1,13 @@
 import { PostItemType } from "@/types";
-import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Image, Linking, Text, TouchableOpacity, View } from "react-native";
 
 export default function ProductDetail() {
   const { item } = useLocalSearchParams();
   const [product, setProduct] = useState<PostItemType | null>(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     console.log("hello:" + item);
@@ -18,6 +20,20 @@ export default function ProductDetail() {
       }
     }
   }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => shareProduct()}>
+          <FontAwesome name="share" size={24} color="white" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, product]);
+
+  const shareProduct = () => {
+    console.log("Sharing product:", product);
+  };
 
   const sendEmailMessage = () => {
     const subject = encodeURIComponent(
