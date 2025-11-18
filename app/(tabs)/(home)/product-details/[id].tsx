@@ -2,7 +2,14 @@ import { PostItemType } from "@/types";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Image, Linking, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Linking,
+  Share,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ProductDetail() {
   const { item } = useLocalSearchParams();
@@ -32,7 +39,12 @@ export default function ProductDetail() {
   }, [navigation, product]);
 
   const shareProduct = () => {
-    console.log("Sharing product:", product);
+    const content = {
+      message: product?.title + "\n" + product?.description,
+    };
+    Share.share(content)
+      .then((result) => console.log(result))
+      .catch((error) => console.log(error));
   };
 
   const sendEmailMessage = () => {
