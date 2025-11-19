@@ -9,7 +9,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import LatestItemList from "./HomeScreen/LatestItemList";
 
 type CategoryParams = {
@@ -19,6 +19,7 @@ type CategoryParams = {
 export default function ItemList() {
   const { categoryName } = useLocalSearchParams<CategoryParams>();
   const [itemList, setItemList] = useState<PostItemType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const db = getFirestore(app);
 
@@ -28,6 +29,7 @@ export default function ItemList() {
   }, [categoryName]);
 
   const getItemListByCategory = async () => {
+    setLoading(true);
     const posts: PostItemType[] = [];
     const q = query(
       collection(db, "UserPost"),
@@ -47,9 +49,11 @@ export default function ItemList() {
     });
 
     setItemList(posts);
+    setLoading(false);
   };
   return (
     <View className="p-2">
+      <ActivityIndicator animating={loading} size="large" color="#0000ff" />
       {itemList?.length > 0 ? (
         <LatestItemList latestItemList={itemList} heading={""} />
       ) : (
