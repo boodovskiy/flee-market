@@ -1,33 +1,46 @@
-import { StyleSheet } from "react-native";
-
-import { Text, View } from "@/components/Themed";
+import LatestItemList from "@/components/HomeScreen/LatestItemList";
+import { Text } from "@/components/Themed";
+import { app } from "@/firebaseConfig";
+import { PostItemType } from "@/types";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { ScrollView } from "react-native";
 
 export default function ExploreScreen() {
+  const [productList, setProductList] = useState<PostItemType[]>([]);
+  const db = getFirestore(app);
+
+  const getAllProducts = async () => {
+    const posts: PostItemType[] = [];
+    const q = query(collection(db, "UserPost"), orderBy("createdAt", "desc"));
+    const querySnapshot = getDocs(q);
+
+    (await querySnapshot).forEach((doc) => {
+      const data = doc.data() as Omit<PostItemType, "id">;
+
+      posts.push({
+        id: doc.id, // Get the document ID
+        ...data, // Spread the rest of the data
+      });
+    });
+
+    setProductList(posts);
+  };
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-    </View>
+    <ScrollView className="p-5 px-8 ">
+      <Text className="text-[30px]">Explore More</Text>
+      <LatestItemList latestItemList={productList} heading={""} />
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
