@@ -8,7 +8,7 @@ export default function PostItem({ item }: { item: PostItemType }) {
   const handlePress = () => {
     router.push({
       pathname: "./product-details/[id]",
-      params: { item: JSON.stringify(item) },
+      params: { item: encodeURIComponent(JSON.stringify(item)) },
     });
   };
 

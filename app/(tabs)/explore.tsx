@@ -1,5 +1,4 @@
 import LatestItemList from "@/components/HomeScreen/LatestItemList";
-import { Text } from "@/components/Themed";
 import { app } from "@/firebaseConfig";
 import { PostItemType } from "@/types";
 import {
@@ -10,7 +9,7 @@ import {
   query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { Text, View } from "react-native";
 
 export default function ExploreScreen() {
   const [productList, setProductList] = useState<PostItemType[]>([]);
@@ -38,9 +37,9 @@ export default function ExploreScreen() {
   }, []);
 
   return (
-    <ScrollView className="p-5 px-8 ">
+    <View className="p-5 px-8 ">
       <Text className="text-[30px]">Explore More</Text>
       <LatestItemList latestItemList={productList} heading={""} />
-    </ScrollView>
+    </View>
   );
 }
