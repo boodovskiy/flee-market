@@ -1,6 +1,8 @@
+import { app } from "@/firebaseConfig";
 import { PostItemType } from "@/types";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useNavigation } from "expo-router";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   Image,
@@ -12,21 +14,29 @@ import {
 } from "react-native";
 
 export default function ProductDetail() {
-  const { item } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
   const [product, setProduct] = useState<PostItemType | null>(null);
   const navigation = useNavigation();
-
   useEffect(() => {
-    console.log("hello:" + item);
-    if (item) {
+    if (!id) return;
+
+    const fetchProduct = async () => {
       try {
-        const parsedItem: PostItemType = JSON.parse(item as string);
-        setProduct(parsedItem);
+        const db = getFirestore(app);
+        const docRef = doc(db, "UserPost", id as string);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          setProduct({ id: snap.id, ...(snap.data() as any) } as PostItemType);
+        } else {
+          console.warn("Product not found:", id);
+        }
       } catch (error) {
-        console.error("Failed to parse item:", error);
+        console.error("Failed to fetch product:", error);
       }
-    }
-  }, []);
+    };
+
+    fetchProduct();
+  }, [id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
