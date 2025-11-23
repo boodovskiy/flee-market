@@ -1,17 +1,19 @@
 import { useUser } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 import React from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import diary from "../../assets/images/diary.png";
-import logout from "../../assets/images/logout.png";
-import search from "../../assets/images/search.png";
+import diary from "../../../assets/images/diary.png";
+import logout from "../../../assets/images/logout.png";
+import search from "../../../assets/images/search.png";
 
 export default function ProfileScreen() {
   const { user } = useUser();
+  const router = useRouter();
   const menuList = [
-    { id: 1, name: "My Products", icon: diary },
-    { id: 2, name: "Explore", icon: search },
-    { id: 3, name: "SCase", icon: search },
-    { id: 4, name: "Logout", icon: logout },
+    { id: 1, name: "My Products", icon: diary, path: "/profile/my-products" },
+    { id: 2, name: "Explore", icon: search, path: "/explore" },
+    { id: 3, name: "SCase", icon: search, path: "/explore" },
+    { id: 4, name: "Logout", icon: logout, path: "/login" },
   ];
 
   return (
@@ -31,7 +33,10 @@ export default function ProfileScreen() {
         numColumns={3}
         style={{ marginTop: 20 }}
         renderItem={({ item, index }) => (
-          <TouchableOpacity className="flex-1 p-3 border-[1px] items-center mx-2 mt-4 rounded-lg border-blue-400 bg-blue-50">
+          <TouchableOpacity
+            onPress={() => router.push(item.path as any)}
+            className="flex-1 p-3 border-[1px] items-center mx-2 mt-4 rounded-lg border-blue-400 bg-blue-50"
+          >
             <Image source={item?.icon} className="w-[50px] h-[50px]" />
             <Text className="text-[12px] mt-2 text-blue-700">{item.name}</Text>
           </TouchableOpacity>
