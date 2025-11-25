@@ -100,8 +100,10 @@ export default function ProductDetail() {
         className="z-40 bg-blue-500 rounded-full p-4 m-2"
         onPress={() => sendEmailMessage()}
       >
-        // TODO: Check wether user is author of the post to hide this button and
-        show delete button options
+        // TODO: Check whether the user is the author of the post. // If so,
+        hide the "Send Message" button and show a single "Delete" button
+        instead. // (If additional actions are needed in the future, consider a
+        menu of options.)
         <Text className="center text-white">Send Message</Text>
       </TouchableOpacity>
     </View>
