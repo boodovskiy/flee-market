@@ -1,8 +1,9 @@
 import { app } from "@/firebaseConfig";
 import { PostItemType } from "@/types";
+import { useUser } from "@clerk/clerk-expo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { deleteDoc, doc, getDoc, getFirestore } from "firebase/firestore";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   Image,
@@ -17,6 +18,8 @@ export default function ProductDetail() {
   const { id } = useLocalSearchParams();
   const [product, setProduct] = useState<PostItemType | null>(null);
   const navigation = useNavigation();
+  const { user } = useUser();
+  const router = useRouter();
   useEffect(() => {
     if (!id) return;
 
@@ -69,6 +72,21 @@ export default function ProductDetail() {
     );
   };
 
+  const deleteProduct = async () => {
+    try {
+      const db = getFirestore(app);
+      await deleteDoc(doc(db, "UserPost", id as string));
+      alert("Product deleted successfully");
+      router.back();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product");
+    }
+  };
+
+  const isAuthor =
+    user?.primaryEmailAddress?.emailAddress === product?.userEmail;
+
   return (
     <View style={{ flex: 1 }} className="bg-white">
       <Image source={{ uri: product?.image }} className="h-[350px] w-full" />
@@ -96,16 +114,21 @@ export default function ProductDetail() {
           <Text className="text-gray-500">{product?.userEmail}</Text>
         </View>
       </View>
-      <TouchableOpacity
-        className="z-40 bg-blue-500 rounded-full p-4 m-2"
-        onPress={() => sendEmailMessage()}
-      >
-        // TODO: Check whether the user is the author of the post. // If so,
-        hide the "Send Message" button and show a single "Delete" button
-        instead. // (If additional actions are needed in the future, consider a
-        menu of options.)
-        <Text className="center text-white">Send Message</Text>
-      </TouchableOpacity>
+      {isAuthor ? (
+        <TouchableOpacity
+          className="z-40 bg-red-500 rounded-full p-4 m-2"
+          onPress={() => deleteProduct()}
+        >
+          <Text className="text-center text-white">Delete Product</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          className="z-40 bg-blue-500 rounded-full p-4 m-2"
+          onPress={() => sendEmailMessage()}
+        >
+          <Text className="text-center text-white">Send Message</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
