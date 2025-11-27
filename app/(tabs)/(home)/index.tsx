@@ -22,56 +22,68 @@ export default function HomeScreen() {
   const [latestItemList, setLatestItemList] = useState<PostItemType[]>([]);
 
   const getSliders = async () => {
-    const querySnapshot = await getDocs(collection(db, "Sliders"));
-    const data: SliderItem[] = [];
+    try {
+      const querySnapshot = await getDocs(collection(db, "Sliders"));
+      const data: SliderItem[] = [];
 
-    querySnapshot.forEach((doc) => {
-      const itemWithId: SliderItem = {
-        id: doc.id,
-        ...(doc.data() as { image: string }),
-      };
+      querySnapshot.forEach((doc) => {
+        const itemWithId: SliderItem = {
+          id: doc.id,
+          ...(doc.data() as { image: string }),
+        };
 
-      console.log(`${itemWithId.id} => ${JSON.stringify(itemWithId)}`);
-      data.push(itemWithId);
-    });
+        console.log(`${itemWithId.id} => ${JSON.stringify(itemWithId)}`);
+        data.push(itemWithId);
+      });
 
-    setSliderList(data);
+      setSliderList(data);
+    } catch (error) {
+      console.error("Error fetching sliders:", error);
+    }
   };
 
   const getCategoryList = async () => {
-    const categories: Category[] = [];
-    const querySnapshot = await getDocs(collection(db, "Category"));
+    try {
+      const categories: Category[] = [];
+      const querySnapshot = await getDocs(collection(db, "Category"));
 
-    querySnapshot.forEach((doc) => {
-      console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
+      querySnapshot.forEach((doc) => {
+        console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
 
-      const data = doc.data() as { name: string; icon: string };
-      categories.push({
-        id: doc.id, // Get the document ID
-        ...data, // Spread the rest of the data
+        const data = doc.data() as { name: string; icon: string };
+        categories.push({
+          id: doc.id, // Get the document ID
+          ...data, // Spread the rest of the data
+        });
       });
-    });
-    setCategoryList(categories);
+      setCategoryList(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
   };
 
   const getLatestItemList = async () => {
-    const posts: PostItemType[] = [];
-    const querySnapshot = await getDocs(
-      query(collection(db, "UserPost"), orderBy("createdAt", "desc"))
-    );
-    querySnapshot.forEach((doc) => {
-      console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
+    try {
+      const posts: PostItemType[] = [];
+      const querySnapshot = await getDocs(
+        query(collection(db, "UserPost"), orderBy("createdAt", "desc"))
+      );
+      querySnapshot.forEach((doc) => {
+        console.log(`Docs: ${doc.id} => ${JSON.stringify(doc.data())}`);
 
-      // 2. Assert the type of the document data (omitting 'id')
-      const data = doc.data() as Omit<PostItemType, "id">;
+        // 2. Assert the type of the document data (omitting 'id')
+        const data = doc.data() as Omit<PostItemType, "id">;
 
-      posts.push({
-        id: doc.id, // Get the document ID
-        ...data, // Spread the rest of the data
+        posts.push({
+          id: doc.id, // Get the document ID
+          ...data, // Spread the rest of the data
+        });
       });
-    });
 
-    setLatestItemList(posts);
+      setLatestItemList(posts);
+    } catch (error) {
+      console.error("Error fetching latest items:", error);
+    }
   };
 
   useEffect(() => {
