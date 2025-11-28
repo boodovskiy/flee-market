@@ -11,7 +11,7 @@ import {
   query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import { app } from "../../../firebaseConfig";
 import { Category, PostItemType, SliderItem } from "../../../types";
 
@@ -20,6 +20,7 @@ export default function HomeScreen() {
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [latestItemList, setLatestItemList] = useState<PostItemType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const getSliders = async () => {
     try {
@@ -87,10 +88,22 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    getSliders();
-    getCategoryList();
-    getLatestItemList();
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([getSliders(), getCategoryList(), getLatestItemList()]);
+      setLoading(false);
+    };
+    fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#3b82f6" />
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={[]}
