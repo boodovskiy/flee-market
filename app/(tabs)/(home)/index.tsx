@@ -22,7 +22,7 @@ export default function HomeScreen() {
   const [latestItemList, setLatestItemList] = useState<PostItemType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const getSliders = async () => {
+  const getSliders = async (): Promise<SliderItem[]> => {
     try {
       const querySnapshot = await getDocs(collection(db, "Sliders"));
       const data: SliderItem[] = [];
@@ -37,13 +37,14 @@ export default function HomeScreen() {
         data.push(itemWithId);
       });
 
-      setSliderList(data);
+      return data;
     } catch (error) {
       console.error("Error fetching sliders:", error);
+      return [];
     }
   };
 
-  const getCategoryList = async () => {
+  const getCategoryList = async (): Promise<Category[]> => {
     try {
       const categories: Category[] = [];
       const querySnapshot = await getDocs(collection(db, "Category"));
@@ -57,13 +58,14 @@ export default function HomeScreen() {
           ...data, // Spread the rest of the data
         });
       });
-      setCategoryList(categories);
+      return categories;
     } catch (error) {
       console.error("Error fetching categories:", error);
+      return [];
     }
   };
 
-  const getLatestItemList = async () => {
+  const getLatestItemList = async (): Promise<PostItemType[]> => {
     try {
       const posts: PostItemType[] = [];
       const querySnapshot = await getDocs(
@@ -81,19 +83,37 @@ export default function HomeScreen() {
         });
       });
 
-      setLatestItemList(posts);
+      return posts;
     } catch (error) {
       console.error("Error fetching latest items:", error);
+      return [];
     }
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       setLoading(true);
-      await Promise.all([getSliders(), getCategoryList(), getLatestItemList()]);
-      setLoading(false);
+      const [sliders, categories, latestItems] = await Promise.all([
+        getSliders(),
+        getCategoryList(),
+        getLatestItemList(),
+      ]);
+
+      if (isMounted) {
+        setSliderList(sliders);
+        setCategoryList(categories);
+        setLatestItemList(latestItems);
+        setLoading(false);
+      }
     };
+
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading) {
