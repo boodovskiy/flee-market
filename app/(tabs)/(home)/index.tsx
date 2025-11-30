@@ -11,7 +11,7 @@ import {
   query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, ScrollView } from "react-native";
 import { app } from "../../../firebaseConfig";
 import { Category, PostItemType, SliderItem } from "../../../types";
 
@@ -125,30 +125,24 @@ export default function HomeScreen() {
   }
 
   return (
-    <FlatList
-      data={[]}
-      ListHeaderComponent={() => (
-        <>
-          <Header />
-          <View
-            className="my-7 h-px w-3/4 bg-gray-200"
-            lightColor="#eee"
-            darkColor="rgba(255,255,255,0.1)"
-          />
-          <Slider sliderList={sliderList} />
-          <Categories categoryList={categoryList} />
-          <LatestItemList
-            latestItemList={latestItemList}
-            heading={"Latest Items"}
-          />
-        </>
-      )}
-      renderItem={() => null}
-      keyExtractor={() => "dummy"}
+    <ScrollView
       showsVerticalScrollIndicator={false}
       className="flex-1"
       contentContainerClassName="py-8 px-6"
-    />
+    >
+      <Header />
+      <View
+        className="my-7 h-px w-3/4 bg-gray-200"
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
+      <Slider sliderList={sliderList} />
+      <Categories categoryList={categoryList} />
+      <LatestItemList
+        latestItemList={latestItemList}
+        heading={"Latest Items"}
+      />
+    </ScrollView>
   );
 }
 

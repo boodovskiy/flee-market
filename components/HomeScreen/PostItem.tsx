@@ -14,7 +14,7 @@ export default function PostItem({ item }: { item: PostItemType }) {
 
   return (
     <TouchableOpacity
-      className="flex-1 m-2 p-2 rounded-lg border-[1px] border-slate-200"
+      className="p-2 rounded-lg border-[1px] border-slate-200 bg-white"
       onPress={handlePress}
     >
       <Image
