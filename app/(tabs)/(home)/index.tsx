@@ -10,13 +10,13 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView } from "react-native";
 import { app } from "../../../firebaseConfig";
 import { Category, PostItemType, SliderItem } from "../../../types";
 
 export default function HomeScreen() {
-  const db = getFirestore(app);
+  const db = useMemo(() => getFirestore(app), []);
   const [sliderList, setSliderList] = useState<SliderItem[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [latestItemList, setLatestItemList] = useState<PostItemType[]>([]);
