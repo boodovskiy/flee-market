@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-expo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { deleteDoc, doc, getDoc, getFirestore } from "firebase/firestore";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   Image,
   Linking,
@@ -20,12 +20,13 @@ export default function ProductDetail() {
   const navigation = useNavigation();
   const { user } = useUser();
   const router = useRouter();
+  const db = useMemo(() => getFirestore(app), []);
+
   useEffect(() => {
     if (!id) return;
 
     const fetchProduct = async () => {
       try {
-        const db = getFirestore(app);
         const docRef = doc(db, "UserPost", id as string);
         const snap = await getDoc(docRef);
         if (snap.exists()) {
@@ -74,7 +75,7 @@ export default function ProductDetail() {
 
   const deleteProduct = async () => {
     try {
-      const db = getFirestore(app);
+      // TODO: Add confirmation dialog before deletion
       await deleteDoc(doc(db, "UserPost", id as string));
       alert("Product deleted successfully");
       router.back();
