@@ -6,6 +6,7 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { deleteDoc, doc, getDoc, getFirestore } from "firebase/firestore";
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
+  Alert,
   Image,
   Linking,
   Share,
@@ -74,15 +75,30 @@ export default function ProductDetail() {
   };
 
   const deleteProduct = async () => {
-    try {
-      // TODO: Add confirmation dialog before deletion
-      await deleteDoc(doc(db, "UserPost", id as string));
-      alert("Product deleted successfully");
-      router.back();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("Failed to delete product");
-    }
+    Alert.alert(
+      "Delete Product",
+      "Are you sure you want to delete this product? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteDoc(doc(db, "UserPost", id as string));
+              alert("Product deleted successfully");
+              router.back();
+            } catch (error) {
+              console.error("Error deleting product:", error);
+              alert("Failed to delete product");
+            }
+          },
+        },
+      ]
+    );
   };
 
   const isAuthor =
