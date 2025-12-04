@@ -1,6 +1,7 @@
 import { app } from "@/firebaseConfig";
 import { PostItemType } from "@/types";
 import { useUser } from "@clerk/clerk-expo";
+import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import {
   collection,
@@ -9,7 +10,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import LatestItemList from "../../../components/HomeScreen/LatestItemList";
 
@@ -19,11 +20,13 @@ export default function MyProducts() {
   const [loading, setLoading] = useState<boolean>(false);
   const navigation = useNavigation();
 
-  const db = getFirestore(app);
+  const db = useMemo(() => getFirestore(app), []);
 
-  useEffect(() => {
-    user && getUserPost();
-  }, [user]);
+  useFocusEffect(
+    useCallback(() => {
+      if (user) getUserPost();
+    }, [user])
+  );
 
   useEffect(() => {
     navigation.setOptions({
