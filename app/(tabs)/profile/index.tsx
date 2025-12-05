@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import React from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
@@ -9,12 +9,24 @@ import search from "../../../assets/images/search.png";
 export default function ProfileScreen() {
   const { user } = useUser();
   const router = useRouter();
+  const { isLoaded, signOut } = useAuth();
   const menuList = [
     { id: 1, name: "My Products", icon: diary, path: "/profile/my-products" },
     { id: 2, name: "Explore", icon: search, path: "/explore" },
     { id: 3, name: "SCase", icon: search, path: "/explore" },
     { id: 4, name: "Logout", icon: logout, path: "/login" },
   ];
+
+  const onMenuPress = (item: any) => {
+    if (item.name === "Logout") {
+      // Handle logout logic here
+      if (isLoaded) {
+        signOut();
+      }
+      return;
+    }
+    router.push(item.path as any);
+  };
 
   return (
     <View className="p-5 bg-white flex-1">
@@ -34,7 +46,7 @@ export default function ProfileScreen() {
         style={{ marginTop: 20 }}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            onPress={() => router.push(item.path as any)}
+            onPress={() => onMenuPress(item)}
             className="flex-1 p-3 border-[1px] items-center mx-2 mt-4 rounded-lg border-blue-400 bg-blue-50"
           >
             <Image source={item?.icon} className="w-[50px] h-[50px]" />
