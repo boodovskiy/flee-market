@@ -9,6 +9,7 @@ import {
   Alert,
   Image,
   Linking,
+  ScrollView,
   Share,
   Text,
   TouchableOpacity,
@@ -105,7 +106,12 @@ export default function ProductDetail() {
     user?.primaryEmailAddress?.emailAddress === product?.userEmail;
 
   return (
-    <View style={{ flex: 1 }} className="bg-white">
+    <ScrollView
+      style={{ flex: 1 }}
+      className="bg-white"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       <Image source={{ uri: product?.image }} className="h-[350px] w-full" />
 
       <View className="p-3">
@@ -146,6 +152,6 @@ export default function ProductDetail() {
           <Text className="text-center text-white">Send Message</Text>
         </TouchableOpacity>
       )}
-    </View>
+    </ScrollView>
   );
 }
